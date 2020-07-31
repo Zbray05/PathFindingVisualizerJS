@@ -64,7 +64,7 @@ function setEndNode(coords) {
 
 function cellhovered(i, j, e) {
   e.preventDefault();
-  console.log(nodeArray[i][j].distanceFromStart);
+  //console.log(nodeArray[i][j].distanceFromStart);
   if (draggingEndNode) {
     setEndNode([i, j]);
   }

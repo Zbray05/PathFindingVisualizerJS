@@ -30,7 +30,7 @@ function getAdjNodes(currentNode, nodeArray) {
         nodeArray[i + adj[direction][0]][j + adj[direction][1]] != undefined
       ) {
         adjNode = nodeArray[i + adj[direction][0]][j + adj[direction][1]];
-        if(adjNode.type != "wall")adjNodeArr.push(adjNode);
+        if (adjNode.type != "wall") adjNodeArr.push(adjNode);
       }
     } catch (e) {
       console.log(e);
@@ -51,13 +51,33 @@ function updateAdjNodes(currentNode, adjNodeArray) {
 
 function recolorNode(node) {
   let { i, j } = node.location;
-  if(node.type != "startNode") window.setTimeout(() => {node.changeType("visited")}, 50 * node.distanceFromStart);
+  if (node.type != "startNode")
+    window.setTimeout(() => {
+      node.changeType("visited");
+    }, 50 * node.distanceFromStart);
 }
 
-function nextNodeDist(arr){
+function nextNodeDist(arr) {
   let nextNode = arr[arr.length - 1];
   return nextNode.distanceFromStart;
+}
 
+function displayPath(node, nodeArray) {
+  if (node.type != "startNode") {
+    let adjNodes = getAdjNodes(node, nodeArray);
+    console.log(adjNodes);
+    let closestNode;
+
+    closestNode = adjNodes.reduce((closest, adj) =>
+      adj.distanceFromStart < closest.distanceFromStart ? adj : closest
+    );
+    
+    window.setTimeout(() => {
+      node.changeType("path");
+    }, 60 * node.distanceFromStart);
+
+    displayPath(closestNode, nodeArray);
+  }
 }
 
 export default function startDijkstras(nodeArray) {
@@ -86,6 +106,7 @@ export default function startDijkstras(nodeArray) {
 
   if (currentNode.type == "endNode") {
     console.log("FOUND THE END");
+    displayPath(currentNode, nodeArray);
   } else {
     console.log("no more nodes");
   }

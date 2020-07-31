@@ -72,6 +72,15 @@ class PathNode {
           ).className = this.type;
           break;
         }
+        case "path":
+        if (!this.isStartOrEnd()) {
+          this.distanceFromStart = Infinity;
+          this.type != type ? (this.type = type) : (this.type = "unvisited");
+          document.getElementById(
+            this.location.toString()
+          ).className = this.type;
+          break;
+        }
       default:
         break;
     }
