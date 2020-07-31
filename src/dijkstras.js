@@ -1,57 +1,86 @@
 function createUnvisitedArr(arr) {
   //node array is a 2d array representing the grid/table being displayed
   let unvisitedNodes = [];
-  arr.forEach((nodeSet) => {
-    unvisitedNodes = [...unvisitedNodes, ...nodeSet];
-  });
+  unvisitedNodes = unvisitedNodes.concat(...arr);
   return unvisitedNodes;
 }
 
 function reverseSort(arr) {
   //arr is an array of object
   //arr is reversed sorts so that pop() can be used
-
   return arr.sort((a, b) => b.distanceFromStart - a.distanceFromStart);
 }
 
-function updateAdjNodes(currentNode, nodeArray) {
+function getAdjNodes(currentNode, nodeArray) {
   //loop 4 time fort the 4 adjacent nodes
   let adj = {
-    up: [-1,0],
-    down: [1,0],
-    left: [0,-1],
-    right: [0,1]
-  }
-  let currentLocation = currentNode.location;
+    up: [-1, 0],
+    down: [1, 0],
+    left: [0, -1],
+    right: [0, 1],
+  };
   let adjNode;
+  let adjNodeArr = [];
+  let { i, j } = currentNode.location;
+
+  for (let direction in adj) {
+    try {
+      if (
+        nodeArray[i + adj[direction][0]] != undefined &&
+        nodeArray[i + adj[direction][0]][j + adj[direction][1]] != undefined
+      ) {
+        adjNode = nodeArray[i + adj[direction][0]][j + adj[direction][1]];
+        adjNodeArr.push(adjNode);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return adjNodeArr;
+}
+function updateAdjNodes(currentNode, adjNodeArray) {
   let newDist;
 
-  for( let direction in adj){
-    
-    try {
-      adjNode = nodeArray[currentLocation["i"] + adj[direction][0]][currentLocation["j"] + adj[direction][1]];
-    } catch (e) {
-    }
-    //if statement needed because when nodeArray[i] exist but nodeArray[i][j] does not then undef is return. 
-    //atm this set up works but will implement better way after algorthim is complete.
-    if(adjNode){
-      newDist = currentNode.distanceFromStart + adjNode.distanceFromAdj
-      if(newDist < adjNode.distanceFromStart) adjNode.distanceFromStart = newDist
-      if(adjNode.type == "endNode") console.log(adjNode);;
-    }
-  }
+  adjNodeArray.forEach((adjNode) => {
+    newDist = currentNode.distanceFromStart + adjNode.distanceFromAdj;
+    if (newDist < adjNode.distanceFromStart)
+      adjNode.distanceFromStart = newDist;
+  });
+}
+
+function recolorNode(node) {
+  let { i, j } = node.location;
+  if(node.type != "startNode") window.setTimeout(() => {node.changeType("visited")}, 50 * node.distanceFromStart);
 }
 
 export default function startDijkstras(nodeArray) {
   let unvisitedNodes = createUnvisitedArr(nodeArray);
   unvisitedNodes = reverseSort(unvisitedNodes);
 
-  let currentNode = unvisitedNodes.pop();
+  let currentNode;
+  let adjNodes;
 
-  while(unvisitedNodes.length > 0 && currentNode.distanceFromStart != Infinity){
-    updateAdjNodes(currentNode, nodeArray);
-    unvisitedNodes = reverseSort(unvisitedNodes);
+  do {
     currentNode = unvisitedNodes.pop();
+    adjNodes = getAdjNodes(currentNode, nodeArray);
+    updateAdjNodes(currentNode, adjNodes);
+    unvisitedNodes = reverseSort(unvisitedNodes);
+    recolorNode(currentNode);
+    adjNodes.forEach((node) => {
+      if (node.type == "endNode") {
+        currentNode = node;
+      }
+    });
+  } while (
+    currentNode.type != "endNode" &&
+    unvisitedNodes.length > 0 &&
+    currentNode.distanceFromStart != Infinity
+  );
+
+  if (currentNode.type == "endNode") {
+    console.log("FOUND THE END");
+  } else {
+    console.log("no more nodes");
   }
-  console.log("no more nodes");
 }

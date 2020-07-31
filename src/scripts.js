@@ -1,13 +1,13 @@
 import PathNode from "./pathNode.js";
-import startDijkstras from "./dijkstras.js"
+import startDijkstras from "./dijkstras.js";
 
-const row = 20;
-const col = 30;
+const row = 30;
+const col = 50;
 let nodeArray = [];
 let mouseclicked = false;
 let wPressed = false;
-let startCoords = [0,0];
-let endCoords = [row-1, col-1];
+let startCoords = [0, 0];
+let endCoords = [row - 1, col - 1];
 let draggingEndNode = false;
 let draggingStartNode = false;
 
@@ -35,17 +35,17 @@ function createGrid() {
 function clearGrid(e) {
   e.preventDefault();
   nodeArray.forEach((nodeSet) => {
-    nodeSet.forEach((node) => node.changeType("unexplored"));
+    nodeSet.forEach((node) => node.changeType("unvisited"));
   });
 }
 
-function setStartNode(coords){
+function setStartNode(coords) {
   //coords is a 2 element array. 0 is the row, 1 is the col
   startCoords = coords;
   nodeArray[coords[0]][coords[1]].changeType("startNode");
   nodeArray[coords[0]][coords[1]].distanceFromStart = 0;
 }
-function setEndNode(coords){
+function setEndNode(coords) {
   //coords is a 2 element array. 0 is the row, 1 is the col
   endCoords = coords;
   nodeArray[coords[0]][coords[1]].changeType("endNode");
@@ -53,26 +53,27 @@ function setEndNode(coords){
 
 function cellhovered(i, j, e) {
   e.preventDefault();
-  if(draggingEndNode){
-    setEndNode([i,j]);
-  };
-  if(draggingStartNode){
-    setStartNode([i,j]);
-  };
+  console.log(nodeArray[i][j]);
+  if (draggingEndNode) {
+    setEndNode([i, j]);
+  }
+  if (draggingStartNode) {
+    setStartNode([i, j]);
+  }
   if (mouseclicked && !wPressed) nodeArray[i][j].changeType("wall");
   if (mouseclicked && wPressed) nodeArray[i][j].changeType("weight");
 }
 
-function startEndNodeDrag(i, j){
-  if(draggingEndNode || draggingStartNode){
+function startEndNodeDrag(i, j) {
+  if (draggingEndNode || draggingStartNode) {
     nodeArray[i][j].removeStartEndType();
   }
 }
 
-function toggleDragging(i,j){
-  if([i,j].toString() == startCoords.toString()){
+function toggleDragging(i, j) {
+  if ([i, j].toString() == startCoords.toString()) {
     draggingStartNode = !draggingStartNode;
-  }else if ([i,j].toString() == endCoords.toString()){
+  } else if ([i, j].toString() == endCoords.toString()) {
     draggingEndNode = !draggingEndNode;
   }
 }
@@ -83,8 +84,8 @@ function nodeListeners(element, i, j) {
     mouseclicked = true;
     cellhovered(i, j, e);
   });
-  element.addEventListener('click', () => toggleDragging(i,j));
-  element.addEventListener('mouseout', () => startEndNodeDrag(i,j));
+  element.addEventListener("click", () => toggleDragging(i, j));
+  element.addEventListener("mouseout", () => startEndNodeDrag(i, j));
 }
 
 function addNodeListeners() {
@@ -112,29 +113,12 @@ table.addEventListener("mousedown", (e) => e.preventDefault());
 document
   .getElementById("clearButton")
   .addEventListener("click", (e) => clearGrid(e));
+document.getElementById("dButton").addEventListener("click", (e) => {
+  startDijkstras(nodeArray);
+});
 addNodeListeners();
 setStartNode(startCoords);
 setEndNode(endCoords);
-
-
-startDijkstras(nodeArray);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //TODO
 //bug while dragging start/end the other can be deleted by hovering over it

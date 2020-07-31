@@ -19,19 +19,22 @@ class PathNode {
   };
   changeTypeHelper = function (type) {
     if (["startNode", "endNode"].includes(this.type)) return this.type;
-    if (this.type == type) return "unvisited";
+    if (this.type == type) {
+      return "unvisited";
+    }
     return type;
   };
   changeType = function (type) {
     type = this.changeTypeHelper(type);
+    if ((type == "unvisited")) this.distanceFromStart = Infinity;
     this.type = type;
     document.getElementById(this.location.toString()).className = type;
   };
   removeStartEndType = function () {
     this.type = "unvisited";
-    this.distance = Infinity;
+    this.distanceFromStart = Infinity;
     document.getElementById(this.location.toString()).className = "unvisited";
-  }
+  };
 }
 
 export default PathNode;
