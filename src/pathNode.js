@@ -17,18 +17,64 @@ class PathNode {
   getLocation = function () {
     return location;
   };
-  changeTypeHelper = function (type) {
-    if (["startNode", "endNode"].includes(this.type)) return this.type;
-    if (this.type == type) {
-      return "unvisited";
-    }
-    return type;
+
+  isStartOrEnd = function () {
+    return this.type == "startNode" || this.type == "endNode";
   };
+
   changeType = function (type) {
-    type = this.changeTypeHelper(type);
-    if ((type == "unvisited")) this.distanceFromStart = Infinity;
-    this.type = type;
-    document.getElementById(this.location.toString()).className = type;
+    switch (type) {
+      case "startNode":
+        if (this.type != "endNode") {
+          this.distanceFromStart = 0;
+          this.type = type;
+          document.getElementById(this.location.toString()).className = type;
+          break;
+        }
+      case "endNode":
+        if (this.type != "startNode") {
+          this.distanceFromStart = Infinity;
+          this.type = type;
+          document.getElementById(this.location.toString()).className = type;
+          break;
+        }
+
+      case "unvisited":
+        if (!this.isStartOrEnd()) {
+          this.distanceFromStart = Infinity;
+          this.type = type;
+          document.getElementById(this.location.toString()).className = type;
+          break;
+        }
+      case "visited":
+        if (!this.isStartOrEnd()) {
+          this.type = type;
+          document.getElementById(this.location.toString()).className = type;
+          break;
+        }
+      case "wall":
+        if (!this.isStartOrEnd()) {
+          this.distanceFromStart = Infinity;
+          this.type != "wall"
+            ? (this.type = "wall")
+            : (this.type = "unvisited");
+          document.getElementById(
+            this.location.toString()
+          ).className = this.type;
+          break;
+        }
+      case "weight":
+        if (!this.isStartOrEnd()) {
+          this.distanceFromStart = Infinity;
+          this.type != type ? (this.type = type) : (this.type = "unvisited");
+          document.getElementById(
+            this.location.toString()
+          ).className = this.type;
+          break;
+        }
+      default:
+        break;
+    }
   };
   removeStartEndType = function () {
     this.type = "unvisited";

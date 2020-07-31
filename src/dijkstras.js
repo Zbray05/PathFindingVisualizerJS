@@ -30,7 +30,7 @@ function getAdjNodes(currentNode, nodeArray) {
         nodeArray[i + adj[direction][0]][j + adj[direction][1]] != undefined
       ) {
         adjNode = nodeArray[i + adj[direction][0]][j + adj[direction][1]];
-        adjNodeArr.push(adjNode);
+        if(adjNode.type != "wall")adjNodeArr.push(adjNode);
       }
     } catch (e) {
       console.log(e);
@@ -54,6 +54,12 @@ function recolorNode(node) {
   if(node.type != "startNode") window.setTimeout(() => {node.changeType("visited")}, 50 * node.distanceFromStart);
 }
 
+function nextNodeDist(arr){
+  let nextNode = arr[arr.length - 1];
+  return nextNode.distanceFromStart;
+
+}
+
 export default function startDijkstras(nodeArray) {
   let unvisitedNodes = createUnvisitedArr(nodeArray);
   unvisitedNodes = reverseSort(unvisitedNodes);
@@ -75,7 +81,7 @@ export default function startDijkstras(nodeArray) {
   } while (
     currentNode.type != "endNode" &&
     unvisitedNodes.length > 0 &&
-    currentNode.distanceFromStart != Infinity
+    nextNodeDist(unvisitedNodes) != Infinity
   );
 
   if (currentNode.type == "endNode") {

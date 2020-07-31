@@ -1,8 +1,8 @@
 import PathNode from "./pathNode.js";
 import startDijkstras from "./dijkstras.js";
 
-const row = 30;
-const col = 50;
+const row = 20;
+const col = 30;
 let nodeArray = [];
 let mouseclicked = false;
 let wPressed = false;
@@ -38,12 +38,23 @@ function clearGrid(e) {
     nodeSet.forEach((node) => node.changeType("unvisited"));
   });
 }
+function gridPrep(e){
+  e.preventDefault();
+  nodeArray.forEach((nodeSet) => {
+    nodeSet.forEach((node) => {
+      if(node.type == "endNode") {
+        node.distanceFromStart = Infinity;
+      }else if(node.type != "wall" && node.type != "weight"){
+        node.changeType("unvisited");
+      }
+    });
+  });
+}
 
 function setStartNode(coords) {
   //coords is a 2 element array. 0 is the row, 1 is the col
   startCoords = coords;
   nodeArray[coords[0]][coords[1]].changeType("startNode");
-  nodeArray[coords[0]][coords[1]].distanceFromStart = 0;
 }
 function setEndNode(coords) {
   //coords is a 2 element array. 0 is the row, 1 is the col
@@ -53,7 +64,7 @@ function setEndNode(coords) {
 
 function cellhovered(i, j, e) {
   e.preventDefault();
-  console.log(nodeArray[i][j]);
+  console.log(nodeArray[i][j].distanceFromStart);
   if (draggingEndNode) {
     setEndNode([i, j]);
   }
@@ -114,6 +125,7 @@ document
   .getElementById("clearButton")
   .addEventListener("click", (e) => clearGrid(e));
 document.getElementById("dButton").addEventListener("click", (e) => {
+  gridPrep(e);
   startDijkstras(nodeArray);
 });
 addNodeListeners();
