@@ -1,0 +1,35 @@
+html{
+  background-color: rgb(5, 78, 78);
+}
+
+body,
+h1 {
+  margin: 0;
+}
+tr,
+td {
+  border: 1px solid lightgray;
+  padding: 15px;
+}
+.gridTable {
+  border-collapse: collapse;
+}
+table{
+    margin: 0 auto;
+    margin-top: 20vh;
+}
+
+.unexplored {
+}
+.wall {
+  background-color: black;
+}
+.startNode {
+  background-color: green;
+}
+.endNode {
+  background-color: red;
+}
+.weight{
+  background-color: blueviolet;
+}
