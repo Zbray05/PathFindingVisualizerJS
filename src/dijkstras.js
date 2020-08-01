@@ -65,7 +65,6 @@ function nextNodeDist(arr) {
 function displayPath(node, nodeArray) {
   if (node.type != "startNode") {
     let adjNodes = getAdjNodes(node, nodeArray);
-    console.log(adjNodes);
     let closestNode;
 
     closestNode = adjNodes.reduce((closest, adj) =>

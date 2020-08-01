@@ -9,6 +9,7 @@ class PathNode {
 
     this.distanceFromStart = Infinity;
     this.distanceFromAdj = 1;
+    this.fScore = Infinity;
   }
 
   changeLocation = function (i, j) {
@@ -29,29 +30,29 @@ class PathNode {
           this.distanceFromStart = 0;
           this.type = type;
           document.getElementById(this.location.toString()).className = type;
-          break;
         }
+        break;
       case "endNode":
         if (this.type != "startNode") {
           this.distanceFromStart = Infinity;
           this.type = type;
           document.getElementById(this.location.toString()).className = type;
-          break;
         }
-
+        break;
       case "unvisited":
         if (!this.isStartOrEnd()) {
           this.distanceFromStart = Infinity;
           this.type = type;
+          this.distanceFromAdj = 1;
           document.getElementById(this.location.toString()).className = type;
-          break;
         }
+        break;
       case "visited":
-        if (!this.isStartOrEnd()) {
+        if (!this.isStartOrEnd() && this.type != "weight") {
           this.type = type;
           document.getElementById(this.location.toString()).className = type;
-          break;
         }
+        break;
       case "wall":
         if (!this.isStartOrEnd()) {
           this.distanceFromStart = Infinity;
@@ -61,8 +62,8 @@ class PathNode {
           document.getElementById(
             this.location.toString()
           ).className = this.type;
-          break;
         }
+        break;
       case "weight":
         if (!this.isStartOrEnd()) {
           this.distanceFromStart = Infinity;
@@ -70,17 +71,18 @@ class PathNode {
           document.getElementById(
             this.location.toString()
           ).className = this.type;
-          break;
+          this.distanceFromAdj = 5;
         }
-        case "path":
+        break;
+      case "path":
         if (!this.isStartOrEnd()) {
           this.distanceFromStart = Infinity;
           this.type != type ? (this.type = type) : (this.type = "unvisited");
           document.getElementById(
             this.location.toString()
           ).className = this.type;
-          break;
         }
+        break;
       default:
         break;
     }
