@@ -76,7 +76,7 @@ class PathNode {
         break;
       case "path":
         if (!this.isStartOrEnd()) {
-          this.distanceFromStart = Infinity;
+          //this.distanceFromStart = Infinity;
           this.type != type ? (this.type = type) : (this.type = "unvisited");
           document.getElementById(
             this.location.toString()

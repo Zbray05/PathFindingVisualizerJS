@@ -3,7 +3,7 @@ import startDijkstras from "./dijkstras.js";
 import aStarStart from "./astar.js";
 
 const row = 20;
-const col = 30;
+const col = 20;
 let nodeArray = [];
 let mouseclicked = false;
 let wPressed = false;
@@ -39,13 +39,13 @@ function clearGrid(e) {
     nodeSet.forEach((node) => node.changeType("unvisited"));
   });
 }
-function gridPrep(e){
+function gridPrep(e) {
   e.preventDefault();
   nodeArray.forEach((nodeSet) => {
     nodeSet.forEach((node) => {
-      if(node.type == "endNode") {
+      if (node.type == "endNode") {
         node.distanceFromStart = Infinity;
-      }else if(node.type != "wall" && node.type != "weight"){
+      } else if (node.type != "wall" && node.type != "weight") {
         node.changeType("unvisited");
       }
     });
@@ -65,7 +65,6 @@ function setEndNode(coords) {
 
 function cellhovered(i, j, e) {
   e.preventDefault();
-  console.log(nodeArray[i][j].distanceFromStart + ", " + nodeArray[i][j].fScore);
   if (draggingEndNode) {
     setEndNode([i, j]);
   }
@@ -74,6 +73,7 @@ function cellhovered(i, j, e) {
   }
   if (mouseclicked && !wPressed) nodeArray[i][j].changeType("wall");
   if (mouseclicked && wPressed) nodeArray[i][j].changeType("weight");
+  console.log(nodeArray[i][j].fScore + " " + nodeArray[i][j].distanceFromStart + " " + nodeArray[i][j].type)
 }
 
 function startEndNodeDrag(i, j) {
@@ -133,12 +133,14 @@ addNodeListeners();
 setStartNode(startCoords);
 setEndNode(endCoords);
 
-
 document.getElementById("starButton").addEventListener("click", (e) => {
   gridPrep(e);
-  aStarStart(nodeArray[startCoords[0]][startCoords[1]], nodeArray[endCoords[0]][endCoords[1]], nodeArray);
+  aStarStart(
+    nodeArray[startCoords[0]][startCoords[1]],
+    nodeArray[endCoords[0]][endCoords[1]],
+    nodeArray
+  );
 });
-
 
 //TODO
 //bug while dragging start/end the other can be deleted by hovering over it

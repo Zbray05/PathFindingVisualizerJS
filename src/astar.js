@@ -1,20 +1,14 @@
+let timer;
+
 export default function aStarStart(start, end, nodeArr) {
+  resetFscore(nodeArr);
   //start and end are a pathNode object, nodeArr is a 2d arr of all nodes
-
-  /* 
-
-what do we need
-start/end nodes and the node array
-add start to close list and adj nodes to open list
-calc node score. f = g + h
-move to node with lowest f
-
-*/
 
   let openlist = [start];
   let closedlist = [];
   let currentNode;
   let adjNodes;
+  timer = 0;
 
   do {
     currentNode = openlist.pop();
@@ -28,22 +22,24 @@ move to node with lowest f
     });
 
     closedlist.push(currentNode);
-    openlist.sort((a, b) => b.fScore - a.fScore);
+    openlist.sort((a, b) => (b.fScore) - (a.fScore));
     recolorNode(currentNode);
   } while (currentNode.type != "endNode" && openlist.length > 0);
 
   if(currentNode.type = "endNode") displayPath(currentNode, nodeArr);
+  console.log(openlist);
 
-  resetFscore(nodeArr);
+  
 }
 
 function getAdjNodes(currentNode, nodeArray) {
   //loop 4 time fort the 4 adjacent nodes
   let adj = {
     up: [-1, 0],
-    down: [1, 0],
     left: [0, -1],
     right: [0, 1],
+    
+    down: [1, 0],
   };
   let adjNode;
   let adjNodeArr = [];
@@ -65,10 +61,10 @@ function getAdjNodes(currentNode, nodeArray) {
   return adjNodeArr;
 }
 
-function calcH(currentNode, endNode) {
-  let { i: currenti, j: currentj } = currentNode.location;
+function calcH(node, endNode) {
+  let { i: nodei, j: nodej } = node.location;
   let { i: endi, j: endj } = endNode.location;
-  return Math.abs(currenti - endi) + Math.abs(currentj - endj);
+  return Math.abs(nodei - endi) + Math.abs(nodej - endj);
 }
 
 function calcG(currentNode, adjNode) {
@@ -102,7 +98,7 @@ function displayPath(node, nodeArray) {
     
     window.setTimeout(() => {
       node.changeType("path");
-    }, 60 * node.distanceFromStart);
+    }, timer);
 
     displayPath(closestNode, nodeArray);
   }
@@ -110,10 +106,11 @@ function displayPath(node, nodeArray) {
 
 function recolorNode(node) {
   let { i, j } = node.location;
+  timer += 100;
   if (node.type != "startNode")
     window.setTimeout(() => {
       node.changeType("visited");
-    }, 50 * node.distanceFromStart);
+    }, timer);
 }
 
 function resetFscore(nodeArray) {

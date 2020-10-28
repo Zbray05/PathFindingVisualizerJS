@@ -1,3 +1,5 @@
+let timer = 0;
+
 function createUnvisitedArr(arr) {
   //node array is a 2d array representing the grid/table being displayed
   let unvisitedNodes = [];
@@ -51,10 +53,10 @@ function updateAdjNodes(currentNode, adjNodeArray) {
 
 function recolorNode(node) {
   let { i, j } = node.location;
-  if (node.type != "startNode")
-    window.setTimeout(() => {
-      node.changeType("visited");
-    }, 50 * node.distanceFromStart);
+  if (node.type != "startNode") timer += 5;
+  window.setTimeout(() => {
+    node.changeType("visited");
+  }, timer);
 }
 
 function nextNodeDist(arr) {
@@ -70,16 +72,17 @@ function displayPath(node, nodeArray) {
     closestNode = adjNodes.reduce((closest, adj) =>
       adj.distanceFromStart < closest.distanceFromStart ? adj : closest
     );
-    
+
     window.setTimeout(() => {
       node.changeType("path");
-    }, 60 * node.distanceFromStart);
+    }, timer);
 
     displayPath(closestNode, nodeArray);
   }
 }
 
 export default function startDijkstras(nodeArray) {
+  timer = 0;
   let unvisitedNodes = createUnvisitedArr(nodeArray);
   unvisitedNodes = reverseSort(unvisitedNodes);
 
